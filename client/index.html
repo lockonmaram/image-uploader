@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="large-6 medium-6 small-6 login">
+          <form>
+            Email:<br>
+            <input type="text" name="email" v-model="email">
+            <br>
+            Name:<br>
+            <input type="text" name="name" v-model="name">
+            <br><br>
+            <button v-on:click="requestToken">Request Token</button>
+          </form>
+          <br><br>
+          <form>
+            <label>File
+              <input type="file" id="file" ref="file" v-on:change="handleFileUpload($event.target.files[0])"/>
+            </label>
+            <button v-on:click="submitFile">Submit</button>
+          </form>
+        </div>
+        <div class="large-6 medium-6 small-6 login">
+          <div v-if="imageData">
+            <div v-for="image in imageData">
+              <div class="image">
+                <img v-bind:src="image.url" style="width:75%"/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var app = new Vue({
+        el: '#app',
+        data: {
+          image: null,
+          email: null,
+          name: null,
+          imageData: null,
+        },
+        methods: {
+          // handleEmailInput: function(email){
+          //   this.email = email
+          //   console.log(this.email);
+          // },
+          // handleNameInput: function(name){
+          //   this.name = name
+          //   console.log(this.name);
+          // },
+          requestToken: function(){
+            event.preventDefault()
+            axios.post('http://35.240.157.177/request-token', {name: this.name, email: this.email})
+            .then(function(user){
+              axios.get('http://35.240.157.177/image')
+              .then(function(images){
+                // console.log(images);
+                this.imageData = images
+              console.log(user.data.uuid);
+              localStorage.setItem('authorization', user.data.uuid);
+              swal("Success!", "Request token successful!", "success");
+            })
+            .catch(function(){
+              swal("Failed!", "Request token failed!", "error");
+            });
+          },
+          handleFileUpload: function(img){
+            this.image = img
+            // console.log(this.image);
+          },
+          submitFile: function(){
+            let formData = new FormData()
+            formData.append('image', this.image)
+
+            axios.post('http://35.240.157.177/image', formData)
+            .then(function(){
+              swal("Success!", "Your file has been uploaded", "success");
+            })
+            .catch(function(){
+              swal("Failed!", "Your file has not been uploaded", "error");
+            });
+          }
+        },
+        watch: {
+          requestImage: function(){
+            axios.get('http://35.240.157.177/image')
+            .then(function(images){
+              // console.log(images);
+              this.imageData = images
+            })
+          },
+        }
+      })
+    </script>
+  </body>
+</html>

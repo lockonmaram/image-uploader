@@ -11,8 +11,8 @@ const imgDetail = (req, res, next) => {
         })
     }
     User
-        .findOne({ 
-            uuid 
+        .findOne({
+            uuid
         })
         .then(user => {
             console.log(user)
@@ -36,7 +36,7 @@ const imgDetail = (req, res, next) => {
                 } else {
                     // update image
                     Image.update(userOnImage, {
-                        $set: { 
+                        $set: {
                             url: req.file.cloudStoragePublicUrl
                         }
                     }, (err, result) => {
