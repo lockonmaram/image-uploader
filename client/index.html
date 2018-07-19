@@ -57,27 +57,12 @@
           //   this.name = name
           //   console.log(this.name);
           // },
-          requestToken: function(){
-            event.preventDefault()
-            axios.post('http://35.240.157.177/request-token', {name: this.name, email: this.email})
-            .then(function(user){
-              axios.get('http://35.240.157.177/image')
-              .then(function(images){
-                // console.log(images);
-                this.imageData = images
-              console.log(user.data.uuid);
-              localStorage.setItem('authorization', user.data.uuid);
-              swal("Success!", "Request token successful!", "success");
-            })
-            .catch(function(){
-              swal("Failed!", "Request token failed!", "error");
-            });
-          },
           handleFileUpload: function(img){
+            console.log(this.image);
             this.image = img
-            // console.log(this.image);
           },
           submitFile: function(){
+            event.preventDefault()
             let formData = new FormData()
             formData.append('image', this.image)
 
@@ -88,7 +73,24 @@
             .catch(function(){
               swal("Failed!", "Your file has not been uploaded", "error");
             });
-          }
+          },
+          requestToken: function(){
+            event.preventDefault()
+            axios.post('http://35.240.157.177/request-token', {name: this.name, email: this.email})
+            .then(function(user){
+              axios.get('http://35.240.157.177/image')
+              .then(function(images){
+                // console.log(images);
+                this.imageData = images
+                console.log(user.data.uuid);
+                localStorage.setItem('authorization', user.data.uuid);
+              })
+              swal("Success!", "Request token successful!", "success");
+            })
+            .catch(function(){
+              swal("Failed!", "Request token failed!", "error");
+            });
+          },
         },
         watch: {
           requestImage: function(){
