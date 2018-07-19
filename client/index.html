@@ -64,9 +64,15 @@
           submitFile: function(){
             event.preventDefault()
             let formData = new FormData()
-            formData.append('image', this.image)
+            formData.append('file', this.image)
+            console.log(formData);
 
-            axios.post('http://35.240.157.177/image', formData)
+            axios({
+              method: 'post',
+              url: 'http://35.240.157.177/image',
+              data: formData,
+              headers: { authorization: 'b7477ba0-8b06-11e8-ac12-d5d616ff1a3a'}
+            })
             .then(function(){
               swal("Success!", "Your file has been uploaded", "success");
             })
